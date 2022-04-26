@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinnerTypes">
+        <item>Coche</item>
+        <item>Microbus</item>
+        <item>Furgoneta</item>
+        <item>Camión</item>
+    </string-array>
+
+    <string-array name="spinnerClaveVehiculo">
+        <item>nombre</item>
+        <item>tipo</item>
+        <item>estado</item>
+        <item>placa</item>
+    </string-array>
+</resources>
