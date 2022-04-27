@@ -17,6 +17,12 @@
         app:layout_constraintVertical_bias="0.436">
 
         <Button
+            android:id="@+id/registroAlquiler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Registrar alquiler" />
+
+        <Button
             android:id="@+id/adminVehiculos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

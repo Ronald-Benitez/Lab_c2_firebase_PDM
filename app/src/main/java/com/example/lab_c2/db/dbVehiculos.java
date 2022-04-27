@@ -41,6 +41,33 @@ public class dbVehiculos extends dbHelper{
         return id;
     }
 
+    public ArrayList<String> spinnerVehiculos(){
+        ArrayList<String> lista = new ArrayList<>();
+        String ve = null;
+        Cursor cursorVehiculos = null;
+
+        try{
+
+            dbHelper DBHelper = new dbHelper(context);
+            SQLiteDatabase db = DBHelper.getReadableDatabase();
+            cursorVehiculos = db.rawQuery("SELECT idV,nombre FROM "+TABLA_VEHICULOS,null);
+
+            if(cursorVehiculos.moveToFirst()){
+                do{
+                    ve = String.valueOf(cursorVehiculos.getInt(0));
+                    ve += "-";
+                    ve += cursorVehiculos.getString(1);
+                    lista.add(ve);
+                }while(cursorVehiculos.moveToNext());
+            }
+            db.close();
+        }catch (Exception e){
+            e.toString();
+        }
+        cursorVehiculos.close();
+        return  lista;
+    }
+
     public ArrayList<vehiculo> readVehiculos (){
         ArrayList<vehiculo> lista = new ArrayList<>();
         vehiculo ve = null;
@@ -80,7 +107,7 @@ public class dbVehiculos extends dbHelper{
             dbHelper DBHelper = new dbHelper(context);
             SQLiteDatabase db = DBHelper.getReadableDatabase();
             cursorVehiculo = db.rawQuery("SELECT * FROM "+TABLA_VEHICULOS+" WHERE "+clave+" = \""+valor+"\" LIMIT 1",null);
-            Toast.makeText(context, "SELECT * FROM "+TABLA_VEHICULOS+" WHERE "+clave+" = \""+valor+"\" LIMIT 1", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "SELECT * FROM "+TABLA_VEHICULOS+" WHERE "+clave+" = \""+valor+"\" LIMIT 1", Toast.LENGTH_SHORT).show();
             if(cursorVehiculo.moveToFirst()){
                 ve = new vehiculo();
                 ve.setId(cursorVehiculo.getInt(0));

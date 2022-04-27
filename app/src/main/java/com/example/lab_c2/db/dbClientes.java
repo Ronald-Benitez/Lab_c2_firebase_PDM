@@ -63,6 +63,33 @@ public class dbClientes extends dbHelper{
         return listaClientes;
     }
 
+    public ArrayList<String> spinnerClientes(){
+        ArrayList<String> lista = new ArrayList<>();
+        String ve = null;
+        Cursor cursorClientes = null;
+
+        try{
+
+            dbHelper DBHelper = new dbHelper(context);
+            SQLiteDatabase db = DBHelper.getReadableDatabase();
+            cursorClientes = db.rawQuery("SELECT idC,nombre FROM "+TABLA_CLIENTES,null);
+
+            if(cursorClientes.moveToFirst()){
+                do{
+                    ve = String.valueOf(cursorClientes.getInt(0));
+                    ve += "-";
+                    ve += cursorClientes.getString(1);
+                    lista.add(ve);
+                }while(cursorClientes.moveToNext());
+            }
+            db.close();
+        }catch (Exception e){
+            e.toString();
+        }
+        cursorClientes.close();
+        return  lista;
+    }
+
     public Clientes mostrarCliente(int idc){
         dbHelper dbhelper = new dbHelper(context);
         SQLiteDatabase db = dbhelper.getWritableDatabase();

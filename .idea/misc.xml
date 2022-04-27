@@ -11,9 +11,11 @@
         <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/lista_item_clientes.xml" value="0.33" />
         <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/lista_item_vehiculo.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_main.xml" value="0.29375" />
+        <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_registro_alquiler.xml" value="0.29375" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_vehiculos.xml" value="0.29375" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_ver_vehiculo.xml" value="0.29375" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/lista_item_vehiculo.xml" value="0.29375" />
+        <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/spinner_item_vehiculo.xml" value="0.29375" />
       </map>
     </option>
   </component>

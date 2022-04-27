@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.example.lab_c2.db.dbHelper;
 
 public class MainActivity extends AppCompatActivity {
-    Button adminVehiculo;
+    Button adminVehiculo, registroAlquiler;
     Button adminCliemte;
 
     @Override
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         adminVehiculo = findViewById(R.id.adminVehiculos);
         adminCliemte = findViewById(R.id.adminClientes);
+        registroAlquiler = findViewById(R.id.registroAlquiler);
         //EVENTOS DE NOTONCES
 
         //EVENTO DE VEHICULOS
@@ -45,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //EVENTO DE RENTA
+        registroAlquiler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,RegistroAlquiler.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void createDB(){

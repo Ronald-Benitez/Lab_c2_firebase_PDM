@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistroAlquiler"
+    android:orientation="vertical"
+    android:padding="30px">
+
+
+    <EditText
+        android:id="@+id/fechaInicio"
+        android:layout_marginTop="20px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Fecha de inicio"
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/fechaFin"
+        android:layout_marginTop="20px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Fecha de fin"
+
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/tiempoAlquiler"
+        android:layout_marginTop="20px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Tiempo de alquiler"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/precioAlquiler"
+        android:layout_marginTop="20px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="50px"
+        android:hint="Precio de alquiler" />
+
+    <Spinner
+        android:id="@+id/idVehiculo"
+        android:layout_marginTop="20px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/idCliente"
+        android:layout_marginTop="20px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/registroAl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registrar alquiler" />
+
+
+</LinearLayout>
