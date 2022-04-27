@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
+import com.example.lab_c2.Clientes_Activity;
 import com.example.lab_c2.entidades.Clientes;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class dbClientes extends dbHelper{
         return id;
     }
 
-    public ArrayList<Clientes> mostrarContactos(){
+    public ArrayList<Clientes> mostrarClientes(){
         dbHelper dbhelper = new dbHelper(context);
         SQLiteDatabase db = dbhelper.getWritableDatabase();
 
@@ -60,5 +61,41 @@ public class dbClientes extends dbHelper{
         }
         cursorClientes.close();
         return listaClientes;
+    }
+
+    public Clientes mostrarCliente(int idc){
+        dbHelper dbhelper = new dbHelper(context);
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+
+
+        Clientes cliente =null;
+        Cursor cursorClientes;
+
+        cursorClientes = db.rawQuery("SELECT * FROM "+TABLA_CLIENTES + " WHERE idc = "+idc + " LIMIT 1",null);
+        if (cursorClientes.moveToFirst()){
+
+                cliente = new Clientes();
+                cliente.setId(cursorClientes.getInt(0));
+                cliente.setNombre(cursorClientes.getString(1));
+
+
+        }
+        cursorClientes.close();
+        return cliente;
+    }
+
+    public boolean editarCliente(int id,String nombre){
+        boolean encontrado =false;
+        dbHelper dbhelper = new dbHelper(context);
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+
+        try{
+            db.execSQL("UPDATE "+TABLA_CLIENTES + " SET nombre= '"+"' WHERE id='"+"'" );
+        }catch (Exception ex){
+            ex.toString();
+        }finally {
+             db.close();
+        }
+        return encontrado;
     }
 }

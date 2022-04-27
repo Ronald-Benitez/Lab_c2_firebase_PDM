@@ -10,13 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Lab_C2">
         <activity
+            android:name=".verCliente"
+            android:exported="false"
+            android:parentActivityName=".Clientes_Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Clientes_Activity" />
+            />
+        </activity>
+        <activity
             android:name=".Clientes_Activity"
             android:exported="false"
             android:parentActivityName=".Clientes_Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Clientes_Activity" />
-                />
+            />
         </activity>
         <activity
             android:name=".verVehiculo"

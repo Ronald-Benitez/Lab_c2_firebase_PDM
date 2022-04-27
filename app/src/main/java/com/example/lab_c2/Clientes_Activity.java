@@ -13,8 +13,6 @@ import com.example.lab_c2.adapters.lista_clientes_adapter;
 import com.example.lab_c2.db.dbClientes;
 import com.example.lab_c2.entidades.Clientes;
 
-import java.lang.reflect.Array;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 
 public class Clientes_Activity extends AppCompatActivity {
@@ -33,7 +31,7 @@ public class Clientes_Activity extends AppCompatActivity {
 
         dbClientes dbCliente = new dbClientes(Clientes_Activity.this);
         listaArrayClientes = new ArrayList<>();
-        lista_clientes_adapter adapter = new lista_clientes_adapter(dbCliente.mostrarContactos());
+        lista_clientes_adapter adapter = new lista_clientes_adapter(dbCliente.mostrarClientes());
         listaClientes.setAdapter(adapter);
     }
 

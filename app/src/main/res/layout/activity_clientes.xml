@@ -29,9 +29,16 @@
         android:id="@+id/agregarButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="35dp"
         android:text="Agregar nuevo cliente"
-        android:onClick="agregarCliente"/>
+        android:onClick="agregarCliente"
+        />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lista de clientes Registrados: " />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listaClientes"
