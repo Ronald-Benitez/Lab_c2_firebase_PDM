@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.3675" />
+        <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3675" />
         <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_clientes.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_vehiculos.xml" value="0.36666666666666664" />

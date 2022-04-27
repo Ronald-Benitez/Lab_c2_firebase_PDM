@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -117,12 +118,33 @@ public class dbClientes extends dbHelper{
         SQLiteDatabase db = dbhelper.getWritableDatabase();
 
         try{
-            db.execSQL("UPDATE "+TABLA_CLIENTES + " SET nombre= '"+"' WHERE id='"+"'" );
+            db.execSQL("UPDATE " + TABLA_CLIENTES + " SET nombre='" +nombre+ "' WHERE idc='"+id+"' ");
+            encontrado = true;
         }catch (Exception ex){
             ex.toString();
         }finally {
              db.close();
         }
+
+
         return encontrado;
+    }
+
+    public boolean eliminarClinete(int id){
+        boolean encontrado = false;
+        dbHelper dbhelper = new dbHelper(context);
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        try{
+            db.execSQL("DELETE FROM "+TABLA_CLIENTES+" WHERE idc = '"+id+"'");
+            encontrado = true;
+        }catch (Exception ex){
+            ex.toString();
+        }finally {
+            db.close();
+        }
+
+
+        return encontrado;
+
     }
 }
