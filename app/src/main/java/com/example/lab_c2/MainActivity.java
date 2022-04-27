@@ -13,15 +13,20 @@ import com.example.lab_c2.db.dbHelper;
 
 public class MainActivity extends AppCompatActivity {
     Button adminVehiculo;
+    Button adminCliemte;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createDB();
+        //INICIALIZACION DE BOTONES
 
         adminVehiculo = findViewById(R.id.adminVehiculos);
+        adminCliemte = findViewById(R.id.adminClientes);
+        //EVENTOS DE NOTONCES
 
+        //EVENTO DE VEHICULOS
         adminVehiculo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -29,6 +34,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //EVENTO DE CLIENTES
+        adminCliemte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,Clientes_Activity.class);
+                startActivity(intent);
+            }
+        });
+
+        //EVENTO DE RENTA
     }
 
     public void createDB(){
