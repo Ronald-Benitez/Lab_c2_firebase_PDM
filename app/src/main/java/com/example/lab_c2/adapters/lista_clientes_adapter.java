@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lab_c2.R;
 import com.example.lab_c2.entidades.Clientes;
 import com.example.lab_c2.verCliente;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -43,17 +44,34 @@ public class lista_clientes_adapter extends RecyclerView.Adapter<lista_clientes_
 
     public class clienteViewHolder extends RecyclerView.ViewHolder {
         TextView viewNombre, viewId;
+        FloatingActionButton verFB, editarFb;
+
 
         public clienteViewHolder(@NonNull View itemView) {
             super(itemView);
+            verFB = itemView.findViewById(R.id.verFloatButton);
+            editarFb = itemView.findViewById(R.id.editarFloatButton);
+
             viewNombre = itemView.findViewById(R.id.nombreCtxt);
             viewId = itemView.findViewById(R.id.idCtxt);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            editarFb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, verCliente.class);
+                    intent.putExtra("editar",true);
+                    intent.putExtra("id",listaClientes.get(getAdapterPosition()).getId());
+                    context.startActivity(intent);
+                }
+            });
+
+            verFB.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, verCliente.class);
+                    intent.putExtra("editar",false);
                     intent.putExtra("id",listaClientes.get(getAdapterPosition()).getId());
                     context.startActivity(intent);
                 }
