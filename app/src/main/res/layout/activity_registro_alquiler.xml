@@ -7,68 +7,89 @@
     tools:context=".RegistroAlquiler"
     android:orientation="vertical"
     android:gravity="center"
-    android:layout_marginHorizontal="60px"
-    android:padding="30px">
+    android:layout_marginHorizontal="30dp"
+
+   >
 
     <TextView
         android:id="@+id/fechaInicio"
-        android:layout_marginTop="60px"
-        android:textSize="60px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
         android:ems="10"
-
-        android:hint="Seleccione la fecha de inicio"
-        android:inputType="date" />
+        android:hint="@string/seleccione_la_fecha_de_inicio"
+        android:textAlignment="center"
+        android:inputType="date"
+        android:minHeight="48dp"
+        android:textColorHint="#78909C"
+        android:textSize="23sp" />
 
     <TextView
         android:id="@+id/fechaFin"
-        android:textSize="60px"
-        android:layout_marginTop="60px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:ems="10"
-        android:hint="Seleccione la fecha de fin"
+        android:textAlignment="center"
+        android:hint="@string/seleccione_la_fecha_de_fin"
+        android:inputType="date"
 
-        android:inputType="date" />
+        android:minHeight="48dp"
+        android:textColorHint="#78909C"
+        android:textSize="23sp" />
 
     <TextView
         android:id="@+id/tiempoAlquiler"
-        android:layout_marginTop="60px"
-        android:textSize="60px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:ems="10"
-        android:hint="Tiempo de alquiler"
-        android:inputType="number" />
+        android:textAlignment="center"
+        android:hint="@string/tiempo_de_alquiler"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColorHint="#78909C"
+        android:textSize="23sp" />
 
     <TextView
         android:id="@+id/precioAlquiler"
-        android:layout_marginTop="60px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="60px"
-        android:hint="Precio de alquiler" />
+        android:layout_marginTop="40dp"
+        android:textAlignment="center"
+        android:hint="@string/precio_de_alquiler"
+        android:textColorHint="#78909C"
+        android:textSize="23sp" />
 
     <Spinner
         android:id="@+id/idVehiculo"
-        android:layout_marginTop="60px"
-        android:textSize="60px"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:minHeight="48dp"
+        android:textAlignment="center"
+        android:spinnerMode="dropdown"
+        android:contentDescription="@string/seleccione_un_vehiculo"
+        android:textSize="23sp" />
 
     <Spinner
         android:id="@+id/idCliente"
-        android:layout_marginTop="60px"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_marginTop="40dp"
+        android:contentDescription="@string/seleccione_un_cliente"
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/registroAl"
-        android:layout_marginTop="60px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrar alquiler" />
+        android:layout_marginTop="40dp"
+        android:padding="15dp"
+        android:backgroundTint="#06618A"
+        app:cornerRadius="15dp"
+        android:text="@string/registrar_alquiler" />
 
 
 </LinearLayout>
