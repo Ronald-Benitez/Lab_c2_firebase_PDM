@@ -11,7 +11,12 @@
         android:theme="@style/Theme.Lab_C2">
         <activity
             android:name=".RegistroAlquiler"
-            android:exported="false" />
+            android:exported="false" >
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <activity
             android:name=".verCliente"
             android:exported="false"

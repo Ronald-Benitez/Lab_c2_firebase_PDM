@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lab_c2.R;
 import com.example.lab_c2.entidades.vehiculo;
 import com.example.lab_c2.verVehiculo;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,7 @@ public class lista_vehiculos_adapter extends RecyclerView.Adapter<lista_vehiculo
 
     public class ViewHolderVehiculos extends RecyclerView.ViewHolder {
         TextView idVehiculo,nombreVehiculo,placaVehiculo,tipoVehiculo,estadoVehiculo;
+        FloatingActionButton edit;
 
         public ViewHolderVehiculos(@NonNull View itemView) {
             super(itemView);
@@ -60,8 +62,9 @@ public class lista_vehiculos_adapter extends RecyclerView.Adapter<lista_vehiculo
             placaVehiculo = itemView.findViewById(R.id.placaVehiculo);
             tipoVehiculo = itemView.findViewById(R.id.tipoVehiculo);
             estadoVehiculo = itemView.findViewById(R.id.estadoVehiculo);
+            edit = itemView.findViewById(R.id.editarVehiculoFloat);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Context context = view.getContext();
