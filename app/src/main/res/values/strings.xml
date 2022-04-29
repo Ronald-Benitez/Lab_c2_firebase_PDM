@@ -18,5 +18,8 @@
     <string name="seleccione_el_estado_del_veh_culo">Seleccione el estado del vehículo</string>
     <string name="nombre">Nombre</string>
     <string name="placa">Placa</string>
+    <string name="vehiculo">Vehiculo:</string>
+    <string name="cliente">Cliente:</string>
+    <string name="editar">Editar</string>
 
 </resources>
