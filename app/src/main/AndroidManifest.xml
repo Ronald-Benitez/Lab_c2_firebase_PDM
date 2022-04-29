@@ -10,12 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Lab_C2">
         <activity
-            android:name=".RegistroAlquiler"
-            android:exported="false" >
+            android:name=".adminAlquiler"
+            android:exported="false"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".RegistroAlquiler"
+            android:exported="false">
+            android:parentActivityName=".adminAlquiler">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".adminAlquiler" />
         </activity>
         <activity
             android:name=".verCliente"

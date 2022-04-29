@@ -50,7 +50,7 @@ public class dbVehiculos extends dbHelper{
 
             dbHelper DBHelper = new dbHelper(context);
             SQLiteDatabase db = DBHelper.getReadableDatabase();
-            cursorVehiculos = db.rawQuery("SELECT idV,nombre FROM "+TABLA_VEHICULOS,null);
+            cursorVehiculos = db.rawQuery("SELECT idV,nombre FROM "+TABLA_VEHICULOS+" WHERE estado=\"Disponible\"",null);
 
             if(cursorVehiculos.moveToFirst()){
                 do{
@@ -138,6 +138,27 @@ public class dbVehiculos extends dbHelper{
             values.put("estado",estado);
             values.put("nombre",nombre);
 
+            db.update(TABLA_VEHICULOS,values,"idV=?",new String[]{String.valueOf(id)});
+            updated = true;
+        }catch (Exception e){
+            updated = false;
+            e.toString();
+        }finally {
+            db.close();
+        }
+
+        return updated;
+    }
+
+    public boolean updateEstadoVehiculo(int id, String estado){
+        dbHelper DBHelper = new dbHelper(context);
+        SQLiteDatabase db = DBHelper.getReadableDatabase();
+
+        boolean updated = false;
+
+        try {
+            ContentValues values= new ContentValues();
+            values.put("estado",estado);
             db.update(TABLA_VEHICULOS,values,"idV=?",new String[]{String.valueOf(id)});
             updated = true;
         }catch (Exception e){

@@ -4,10 +4,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +24,8 @@ import android.widget.Toast;
 import com.example.lab_c2.db.dbAlquileres;
 import com.example.lab_c2.db.dbClientes;
 import com.example.lab_c2.db.dbVehiculos;
+import com.example.lab_c2.entidades.Alquiler;
+import com.example.lab_c2.entidades.Clientes;
 import com.example.lab_c2.entidades.vehiculo;
 
 import java.time.LocalDate;
@@ -31,18 +35,22 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class RegistroAlquiler extends AppCompatActivity {
-    Button registro;
+    Button registro,delete;
     TextView precioAlquiler,fechaInicio, fechaFin,tiempoAlquiler;
     Spinner idVehiculo,idCliente;
+    int id=0,idV=0,idC=0;
 
     ArrayList<String> listVehiculos,listClientes;
     dbVehiculos vehiculosDB = new dbVehiculos(this);
     dbClientes clientesDB = new dbClientes(this);
+    dbAlquileres alquilerDB = new dbAlquileres(this);
+
     DatePickerDialog.OnDateSetListener setDateListener,setDateListener2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
         setContentView(R.layout.activity_registro_alquiler);
 
         registro = findViewById(R.id.registroAl);
@@ -52,22 +60,55 @@ public class RegistroAlquiler extends AppCompatActivity {
         precioAlquiler = findViewById(R.id.precioAlquiler);
         idVehiculo = findViewById(R.id.idVehiculo);
         idCliente = findViewById(R.id.idCliente);
+        delete = findViewById(R.id.deleteAlquiler);
 
         Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-
-
         listVehiculos = vehiculosDB.spinnerVehiculos();
         listClientes = clientesDB.spinnerClientes();
+
+        if(listVehiculos.size()<1){
+            Toast.makeText(this, "No hay vehiculos disponibles", Toast.LENGTH_SHORT).show();
+        }
+
+        if(extras!=null){
+            id = extras.getInt("ID");
+            registro.setText("Actualizar");
+            delete.setVisibility(View.VISIBLE);
+
+            Alquiler alquiler = alquilerDB.findAlquiler("idA",String.valueOf(id));
+            vehiculo ve = vehiculosDB.findVehiculo("idV",String.valueOf(alquiler.getIdV()));
+            Clientes cli = clientesDB.findClientes("idC",String.valueOf(alquiler.getIdC()));
+
+            String clienteN = cli.getId()+"-"+cli.getNombre();
+            String vehiculoN = ve.getId()+"-"+ve.getNombre();
+
+            idV = ve.getId();
+            idC = cli.getId();
+
+            listClientes.add(clienteN);
+            listVehiculos.add(vehiculoN);
+
+            fechaInicio.setText(alquiler.getFecchaInicio());
+            fechaFin.setText(alquiler.getFecchaFin());
+            tiempoAlquiler.setText(alquiler.getTiempoAlquiler());
+            precioAlquiler.setText(alquiler.getPrecioAlquiler());
+
+        }
 
         ArrayAdapter<String> adapterV = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listVehiculos);
         idVehiculo.setAdapter(adapterV);
 
         ArrayAdapter<String> adapterC = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, listClientes);
         idCliente.setAdapter(adapterC);
+
+        if(extras!=null){
+            idVehiculo.setSelection(listVehiculos.size()-1);
+            idCliente.setSelection(listClientes.size()-1);
+        }
 
         fechaInicio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,19 +225,32 @@ public class RegistroAlquiler extends AppCompatActivity {
             }
         });*/
 
+
         registro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dbAlquileres db = new dbAlquileres(RegistroAlquiler.this);
 
-                String idV = idVehiculo.getSelectedItem().toString().split("-")[0];
-                String idC = idCliente.getSelectedItem().toString().split("-")[0];
-                String fechaI = fechaInicio.getText().toString();
-                String fechaF = fechaFin.getText().toString();
-                String tiempoAl = tiempoAlquiler.getText().toString();
-                String precioAl = precioAlquiler.getText().toString();
+                String idV = "";
+                String idC = "";
+                String fechaI = "";
+                String fechaF = "";
+                String tiempoAl = "";
+                String precioAl = "";
+
+                try {
+                    idV = idVehiculo.getSelectedItem().toString().split("-")[0];
+                    idC = idCliente.getSelectedItem().toString().split("-")[0];
+                    fechaI = fechaInicio.getText().toString();
+                    fechaF = fechaFin.getText().toString();
+                    tiempoAl = tiempoAlquiler.getText().toString();
+                    precioAl = precioAlquiler.getText().toString();
+                }catch (Exception e){
+                    e.toString();
+                }
 
                 boolean campoVacio = false;
+
 
                 if(fechaI.isEmpty()){
                     campoVacio=true;
@@ -214,20 +268,53 @@ public class RegistroAlquiler extends AppCompatActivity {
                     campoVacio=true;
                 }
 
-                if(!campoVacio) {
-                    long id = db.createAlquiler(fechaI, fechaF, tiempoAl, precioAl, idV, idC);
+                if(id>0) {
+                    if (!campoVacio) {
+                        boolean updated = db.updateAlquiler(id,fechaI, fechaF, tiempoAl, precioAl, idV, idC);
 
-                    if (id > 0) {
-                        Toast.makeText(RegistroAlquiler.this, "Alquiler registrado con éxito", Toast.LENGTH_SHORT).show();
+                        if (updated) {
+                            Toast.makeText(RegistroAlquiler.this, "Alquiler actualizado con éxito", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegistroAlquiler.this, "Error al actualizar el alquiler", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(RegistroAlquiler.this, "Error al registrar alquiler", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistroAlquiler.this, "No debe dejar campos vacios", Toast.LENGTH_SHORT).show();
                     }
+
                 }else{
-                    Toast.makeText(RegistroAlquiler.this, "No debe dejar campos vacios", Toast.LENGTH_SHORT).show();
+                    if (!campoVacio) {
+                        long id = db.createAlquiler(fechaI, fechaF, tiempoAl, precioAl, idV, idC);
+                        vehiculosDB.updateEstadoVehiculo(Integer.parseInt(idV), "Alquilado");
+
+                        if (id > 0) {
+                            Toast.makeText(RegistroAlquiler.this, "Alquiler registrado con éxito", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegistroAlquiler.this, "Error al registrar alquiler", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(RegistroAlquiler.this, "No debe dejar campos vacios", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
+
             }
         });
 
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean removed = alquilerDB.deleteAlquiler(id);
+
+                if(removed){
+                    Toast.makeText(RegistroAlquiler.this, "Alquiler eliminado con éxito", Toast.LENGTH_SHORT).show();
+                    vehiculosDB.updateEstadoVehiculo(idV, "Disponible");
+                    Intent intent = new Intent(RegistroAlquiler.this, adminAlquiler.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(RegistroAlquiler.this, "Error al eliminar alquiler", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 

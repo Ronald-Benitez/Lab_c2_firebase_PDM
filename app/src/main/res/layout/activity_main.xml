@@ -32,4 +32,12 @@
             app:cornerRadius="15dp"
             android:text="Administrar Clientes" />
 
+        <Button
+            android:id="@+id/adminAlquileres"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:cornerRadius="15dp"
+            android:backgroundTint="#FF3D00"
+            android:text="Administrar alquileres" />
+
 </LinearLayout>
