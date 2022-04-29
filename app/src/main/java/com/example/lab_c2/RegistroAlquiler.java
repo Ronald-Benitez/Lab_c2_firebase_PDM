@@ -325,17 +325,18 @@ public class RegistroAlquiler extends AppCompatActivity {
         LocalDate finalD = LocalDate.parse(fechaFin.getText().toString(),formatter);
 
         Period periodo = null;
+        String tiempo = "";
 
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 periodo = Period.between(inicioD, finalD);
-                Toast.makeText(this, String.valueOf(periodo.getDays()), Toast.LENGTH_SHORT).show();
+                tiempo=String.valueOf(periodo.getYears()*365+(finalD.getDayOfYear()-inicioD.getDayOfYear()));
             }
         } catch (Exception e) {
             e.toString();
         }
 
-        tiempoAlquiler.setText(String.valueOf(periodo.getDays()));
+        tiempoAlquiler.setText(tiempo);
     }
 
     public void getPrecioAlquiler(){
