@@ -21,7 +21,7 @@ public class verVehiculo extends AppCompatActivity {
     Spinner tipoVehiculo;
     Switch estadoVehiculo;
     Button vehiculoB,deleteVehiculo;
-    public int id=0;
+    public String id="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class verVehiculo extends AppCompatActivity {
         tipoVehiculo.setAdapter(adapter);
 
         if(extras!=null){
-            id = extras.getInt("ID");
+            id = extras.getString("ID");
             vehiculoB.setText("Actualizar");
             dbVehiculos db = new dbVehiculos(verVehiculo.this);
             vehiculo ve = db.findVehiculo("idV",String.valueOf(id));
@@ -68,7 +68,7 @@ public class verVehiculo extends AppCompatActivity {
             public void onClick(View view) {
                 dbVehiculos db = new dbVehiculos(verVehiculo.this);
 
-                if(id>0){
+                if(id != ""){
                     boolean updated = db.updateVehiculo(id,placaVehiculo.getText().toString(), tipoVehiculo.getSelectedItem().toString(), estadoVehiculo.getText().toString(), nombreVehiculo.getText().toString());
 
                     if(updated){

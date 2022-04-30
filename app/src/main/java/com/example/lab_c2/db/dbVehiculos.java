@@ -1,191 +1,122 @@
 package com.example.lab_c2.db;
 
-import android.content.ContentValues;
+
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.lab_c2.entidades.vehiculo;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
-public class dbVehiculos extends dbHelper{
+public class dbVehiculos {
     Context context;
+    //private FirebaseDatabase db;
+    //private DatabaseReference dbRef;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public dbVehiculos(@Nullable Context context) {
-        super(context);
+        super();
         this.context = context;
+        /*FirebaseApp.initializeApp(context);
+        db = FirebaseDatabase.getInstance();
+        dbRef = db.getReference();*/
+
     }
 
     public long createVehiculo(String placa, String tipo, String estado,String nombre){
-        long id=0;
+        final long[] id = {0};
 
-        try{
-            dbHelper DBHelper = new dbHelper(context);
-            SQLiteDatabase db = DBHelper.getReadableDatabase();
+        vehiculo ve = new vehiculo();
+        ve.setId(UUID.randomUUID().toString());
+        ve.setPlaca(placa);
+        ve.setTipo(tipo);
+        ve.setEstado(estado);
+        ve.setNombre(nombre);
 
-            ContentValues values= new ContentValues();
-            values.put("placa",placa);
-            values.put("tipo",tipo);
-            values.put("estado",estado);
-            values.put("nombre",nombre);
+        db.collection("vehiculos").document(ve.getId()).set(ve).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                id[0] =2;
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                id[0] =0;
+            }
+        });
 
-            id = db.insert(TABLA_VEHICULOS,null,values);
-            db.close();
-        }catch (Exception e){
-            e.toString();
-        }
-
-        return id;
+        return id[0];
     }
 
     public ArrayList<String> spinnerVehiculos(){
         ArrayList<String> lista = new ArrayList<>();
         String ve = null;
-        Cursor cursorVehiculos = null;
 
-        try{
-
-            dbHelper DBHelper = new dbHelper(context);
-            SQLiteDatabase db = DBHelper.getReadableDatabase();
-            cursorVehiculos = db.rawQuery("SELECT idV,nombre FROM "+TABLA_VEHICULOS+" WHERE estado=\"Disponible\"",null);
-
-            if(cursorVehiculos.moveToFirst()){
-                do{
-                    ve = String.valueOf(cursorVehiculos.getInt(0));
-                    ve += "-";
-                    ve += cursorVehiculos.getString(1);
-                    lista.add(ve);
-                }while(cursorVehiculos.moveToNext());
-            }
-            db.close();
-        }catch (Exception e){
-            e.toString();
-        }
-        cursorVehiculos.close();
         return  lista;
     }
 
     public ArrayList<vehiculo> readVehiculos (){
         ArrayList<vehiculo> lista = new ArrayList<>();
-        vehiculo ve = null;
-        Cursor cursorVehiculos = null;
 
-        try{
+        db.collection("vehiculos")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                vehiculo ve = new vehiculo();
+                                ve.setId(document.getString("id"));
+                                ve.setPlaca(document.getString("placa"));
+                                ve.setTipo(document.getString("tipo"));
+                                ve.setEstado(document.getString("estado"));
+                                ve.setNombre(document.getString("nombre"));
+                                Log.d("TAG", "DocumentSnapshot data: " + document.getData());
+                                Log.d("a",ve.getNombre());
+                                //
+                                lista.add(ve);
+                                Log.d("b",lista.get(0).getNombre());
+                            }
+                        }
+                    }
+                });
 
-            dbHelper DBHelper = new dbHelper(context);
-            SQLiteDatabase db = DBHelper.getReadableDatabase();
-            cursorVehiculos = db.rawQuery("SELECT * FROM "+TABLA_VEHICULOS,null);
-
-            if(cursorVehiculos.moveToFirst()){
-                do{
-                    ve = new vehiculo();
-                    ve.setId(cursorVehiculos.getInt(0));
-                    ve.setPlaca(cursorVehiculos.getString(1));
-                    ve.setTipo(cursorVehiculos.getString(2));
-                    ve.setEstado(cursorVehiculos.getString(3));
-                    ve.setNombre(cursorVehiculos.getString(4));
-
-                    lista.add(ve);
-                }while(cursorVehiculos.moveToNext());
-            }
-            db.close();
-        }catch (Exception e){
-            e.toString();
-        }
-        cursorVehiculos.close();
         return  lista;
     }
 
     public vehiculo findVehiculo(String clave, String valor){
         vehiculo ve = null;
-        Cursor cursorVehiculo = null;
 
-        try {
-            dbHelper DBHelper = new dbHelper(context);
-            SQLiteDatabase db = DBHelper.getReadableDatabase();
-            cursorVehiculo = db.rawQuery("SELECT * FROM "+TABLA_VEHICULOS+" WHERE "+clave+" = \""+valor+"\" LIMIT 1",null);
-            //Toast.makeText(context, "SELECT * FROM "+TABLA_VEHICULOS+" WHERE "+clave+" = \""+valor+"\" LIMIT 1", Toast.LENGTH_SHORT).show();
-            if(cursorVehiculo.moveToFirst()){
-                ve = new vehiculo();
-                ve.setId(cursorVehiculo.getInt(0));
-                ve.setPlaca(cursorVehiculo.getString(1));
-                ve.setTipo(cursorVehiculo.getString(2));
-                ve.setEstado(cursorVehiculo.getString(3));
-                ve.setNombre(cursorVehiculo.getString(4));
-            }
-
-        }catch (Exception e){
-            e.toString();
-        }
-
-        cursorVehiculo.close();
         return  ve;
     }
 
-    public boolean updateVehiculo(int id,String placa, String tipo, String estado,String nombre){
-        dbHelper DBHelper = new dbHelper(context);
-        SQLiteDatabase db = DBHelper.getReadableDatabase();
-
+    public boolean updateVehiculo(String id,String placa, String tipo, String estado,String nombre){
         boolean updated = false;
-
-        try {
-            ContentValues values= new ContentValues();
-            values.put("placa",placa);
-            values.put("tipo",tipo);
-            values.put("estado",estado);
-            values.put("nombre",nombre);
-
-            db.update(TABLA_VEHICULOS,values,"idV=?",new String[]{String.valueOf(id)});
-            updated = true;
-        }catch (Exception e){
-            updated = false;
-            e.toString();
-        }finally {
-            db.close();
-        }
 
         return updated;
     }
 
-    public boolean updateEstadoVehiculo(int id, String estado){
-        dbHelper DBHelper = new dbHelper(context);
-        SQLiteDatabase db = DBHelper.getReadableDatabase();
-
+    public boolean updateEstadoVehiculo(String id, String estado){
         boolean updated = false;
 
-        try {
-            ContentValues values= new ContentValues();
-            values.put("estado",estado);
-            db.update(TABLA_VEHICULOS,values,"idV=?",new String[]{String.valueOf(id)});
-            updated = true;
-        }catch (Exception e){
-            updated = false;
-            e.toString();
-        }finally {
-            db.close();
-        }
+
 
         return updated;
     }
 
-    public boolean deleteVehiculo(int id){
-        dbHelper DBHelper = new dbHelper(context);
-        SQLiteDatabase db = DBHelper.getReadableDatabase();
-
+    public boolean deleteVehiculo(String id){
         boolean removed = false;
 
-        try{
-            db.delete(TABLA_VEHICULOS,"idV=?",new String[]{String.valueOf(id)});
-            removed = true;
-        }catch (Exception e){
-            removed = false;
-            e.toString();
-        }finally {
-            db.close();
-        }
 
         return removed;
     }

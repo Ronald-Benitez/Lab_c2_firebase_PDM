@@ -1,17 +1,17 @@
 package com.example.lab_c2.entidades;
 
 public class vehiculo {
-    private int id;
+    private String id;
     private String placa;
     private String tipo;
     private String estado;
     private String nombre;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

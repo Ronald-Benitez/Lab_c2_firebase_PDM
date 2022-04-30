@@ -36,7 +36,7 @@ public class lista_vehiculos_adapter extends RecyclerView.Adapter<lista_vehiculo
     public void onBindViewHolder(@NonNull ViewHolderVehiculos holder, int position) {
         try {
             holder.nombreVehiculo.setText(listaVehiculos.get(position).getNombre());
-            holder.idVehiculo.setText(String.valueOf(listaVehiculos.get(position).getId()));
+            holder.idVehiculo.setText(listaVehiculos.get(position).getId());
             holder.placaVehiculo.setText(listaVehiculos.get(position).getPlaca());
             holder.tipoVehiculo.setText(listaVehiculos.get(position).getTipo());
             holder.estadoVehiculo.setText(listaVehiculos.get(position).getEstado());

@@ -38,7 +38,9 @@ public class RegistroAlquiler extends AppCompatActivity {
     Button registro,delete;
     TextView precioAlquiler,fechaInicio, fechaFin,tiempoAlquiler;
     Spinner idVehiculo,idCliente;
-    int id=0,idV=0,idC=0;
+    int id=0;
+    String idV="";
+    int idC=0;
 
     ArrayList<String> listVehiculos,listClientes;
     dbVehiculos vehiculosDB = new dbVehiculos(this);
@@ -284,7 +286,7 @@ public class RegistroAlquiler extends AppCompatActivity {
                 }else{
                     if (!campoVacio) {
                         long id = db.createAlquiler(fechaI, fechaF, tiempoAl, precioAl, idV, idC);
-                        vehiculosDB.updateEstadoVehiculo(Integer.parseInt(idV), "Alquilado");
+                        vehiculosDB.updateEstadoVehiculo(idV, "Alquilado");
 
                         if (id > 0) {
                             Toast.makeText(RegistroAlquiler.this, "Alquiler registrado con éxito", Toast.LENGTH_SHORT).show();
