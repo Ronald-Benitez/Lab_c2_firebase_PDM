@@ -7,6 +7,18 @@ public class vehiculo {
     private String estado;
     private String nombre;
 
+    public vehiculo(String id, String placa, String tipo, String estado, String nombre) {
+        this.id = id;
+        this.placa = placa;
+        this.tipo = tipo;
+        this.estado = estado;
+        this.nombre = nombre;
+    }
+
+    public vehiculo(){
+
+    }
+
     public String getId() {
         return id;
     }

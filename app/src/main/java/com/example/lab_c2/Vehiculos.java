@@ -17,6 +17,10 @@ import android.widget.Toast;
 import com.example.lab_c2.adapters.lista_vehiculos_adapter;
 import com.example.lab_c2.db.dbVehiculos;
 import com.example.lab_c2.entidades.vehiculo;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -28,6 +32,8 @@ public class Vehiculos extends AppCompatActivity {
     public RecyclerView lista;
     public dbVehiculos db = new dbVehiculos(Vehiculos.this);
     ArrayList<vehiculo> listaVehiculos;
+    FirebaseFirestore dbF=FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +51,8 @@ public class Vehiculos extends AppCompatActivity {
 
         listaVehiculos = db.readVehiculos();
 
-        for(int i = 0; i < listaVehiculos.size(); i++){
-            Log.d("Vehiculo", listaVehiculos.get(i).getNombre().toString());
-        }
 
-
-
-        lista_vehiculos_adapter adapter = new lista_vehiculos_adapter(listaVehiculos);
-        lista.setAdapter(adapter);
+        firebaseGetItem();
 
         ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this,R.array.spinnerClaveVehiculo, android.R.layout.simple_spinner_dropdown_item);
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_item);
@@ -81,5 +81,26 @@ public class Vehiculos extends AppCompatActivity {
                 }
             }
         });
+
+
+    }
+    public void firebaseGetItem(){
+        listaVehiculos = new ArrayList<>();
+        dbF.collection("vehiculos")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                vehiculo ve = document.toObject(vehiculo.class);
+                                listaVehiculos.add(ve);
+                            }
+                            lista_vehiculos_adapter adapter = new lista_vehiculos_adapter(listaVehiculos);
+                            lista.setAdapter(adapter);
+                        }
+                    }
+                });
+
     }
 }

@@ -75,12 +75,7 @@ public class dbVehiculos {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                vehiculo ve = new vehiculo();
-                                ve.setId(document.getString("id"));
-                                ve.setPlaca(document.getString("placa"));
-                                ve.setTipo(document.getString("tipo"));
-                                ve.setEstado(document.getString("estado"));
-                                ve.setNombre(document.getString("nombre"));
+                                vehiculo ve = document.toObject(vehiculo.class);
                                 Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                                 Log.d("a",ve.getNombre());
                                 //
