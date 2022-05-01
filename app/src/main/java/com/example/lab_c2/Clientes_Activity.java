@@ -10,8 +10,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.lab_c2.adapters.lista_clientes_adapter;
+import com.example.lab_c2.adapters.lista_vehiculos_adapter;
 import com.example.lab_c2.db.dbClientes;
 import com.example.lab_c2.entidades.Clientes;
+import com.example.lab_c2.entidades.vehiculo;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -19,6 +25,8 @@ public class Clientes_Activity extends AppCompatActivity {
     private EditText txtNombre;
     private RecyclerView listaClientes;
     ArrayList<Clientes> listaArrayClientes;
+    FirebaseFirestore dbF = FirebaseFirestore.getInstance();
+    dbClientes db = new dbClientes(this);
 
 
     @Override
@@ -29,24 +37,42 @@ public class Clientes_Activity extends AppCompatActivity {
         listaClientes = findViewById(R.id.listaClientes);
         listaClientes.setLayoutManager( new LinearLayoutManager(this));
 
-        dbClientes dbCliente = new dbClientes(Clientes_Activity.this);
-        listaArrayClientes = new ArrayList<>();
-        lista_clientes_adapter adapter = new lista_clientes_adapter(dbCliente.mostrarClientes());
-        listaClientes.setAdapter(adapter);
+        getData();
+
+
+
+        //lista_clientes_adapter adapter = new lista_clientes_adapter(dbCliente.mostrarClientes());
+        //listaClientes.setAdapter(adapter);
     }
 
     public void agregarCliente(View view){
         dbClientes dbclientes = new dbClientes(Clientes_Activity.this);
-        long id= dbclientes.insertarCliente(txtNombre.getText().toString());
-        if (id >0){
-            Toast.makeText(this, "CLIENTE REGISTRADO", Toast.LENGTH_SHORT).show();
-            limpiarFormulario();
-        }else{
-            Toast.makeText(this, "ERROR AL REGISTRAR AL CLIENTE", Toast.LENGTH_SHORT).show();
-        }
+        dbclientes.insertarCliente(txtNombre.getText().toString());
+        limpiarFormulario();
+        getData();
     }
 
     private void limpiarFormulario(){
         txtNombre.setText("");
+    }
+
+    public void getData(){
+        listaArrayClientes = new ArrayList<>();
+
+        dbF.collection("clientes")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                Clientes c = document.toObject(Clientes.class);
+                                listaArrayClientes.add(c);
+                            }
+                            lista_clientes_adapter adapter = new lista_clientes_adapter(listaArrayClientes);
+                            listaClientes.setAdapter(adapter);
+                        }
+                    }
+                });
     }
 }

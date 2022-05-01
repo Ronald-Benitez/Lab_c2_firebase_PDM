@@ -37,8 +37,6 @@ public class dbVehiculos {
     }
 
     public void createVehiculo(String placa, String tipo, String estado,String nombre){
-        final long[] id = {0};
-
         vehiculo ve = new vehiculo();
         ve.setId(UUID.randomUUID().toString());
         ve.setPlaca(placa);
@@ -60,6 +58,10 @@ public class dbVehiculos {
 
     }
 
+    public void updateVehiculo(vehiculo ve){
+        db.collection("vehiculos").document(ve.getId()).set(ve);
+    }
+
     public void updateVehiculo(String id,String placa, String tipo, String estado,String nombre){
         vehiculo ve = new vehiculo(id,placa,tipo,estado,nombre);
 
@@ -70,8 +72,10 @@ public class dbVehiculos {
                 Toast.makeText(context, "Vehiculo actualizado", Toast.LENGTH_SHORT).show();
             }
 
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "Error al actualizar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error al actualizar vehiculo", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -85,9 +89,10 @@ public class dbVehiculos {
                 Intent intent = new Intent(context, Vehiculos.class);
                 context.startActivity(intent);
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error al eliminar vehiculo", Toast.LENGTH_SHORT).show();
             }
         });
     }

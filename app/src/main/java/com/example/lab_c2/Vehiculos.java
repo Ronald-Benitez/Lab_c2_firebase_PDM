@@ -1,5 +1,6 @@
 package com.example.lab_c2;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.example.lab_c2.adapters.lista_vehiculos_adapter;
 import com.example.lab_c2.db.dbVehiculos;
 import com.example.lab_c2.entidades.vehiculo;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -79,8 +81,10 @@ public class Vehiculos extends AppCompatActivity {
                         startActivity(intent);
                     }
 
-                    public void onFailure(Exception e){
-                        Toast.makeText(Vehiculos.this,"Vehiculo no encontrado",Toast.LENGTH_SHORT).show();
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Vehiculos.this, "Vehiculo no encontrado", Toast.LENGTH_SHORT).show();
                     }
                 });
 

@@ -1,14 +1,22 @@
 package com.example.lab_c2.entidades;
 
 public class Clientes {
-    private int id;
+    private String id;
     private String nombre;
 
-    public int getId() {
+    public Clientes() {
+    }
+
+    public Clientes(String id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

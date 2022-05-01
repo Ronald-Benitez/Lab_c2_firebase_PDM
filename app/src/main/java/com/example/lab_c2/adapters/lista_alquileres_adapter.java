@@ -36,7 +36,7 @@ public class lista_alquileres_adapter extends RecyclerView.Adapter<lista_alquile
         try {
             holder.nombreV.setText(lista.get(position).getNombreV());
             holder.nombreC.setText(lista.get(position).getNombreC());
-            holder.id.setText(String.valueOf(lista.get(position).getIdAlquiler()));
+            holder.id.setText(lista.get(position).getIdA());
         }catch (Exception e){
             e.toString();
         }
@@ -63,7 +63,7 @@ public class lista_alquileres_adapter extends RecyclerView.Adapter<lista_alquile
                 public void onClick(View view) {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, RegistroAlquiler.class);
-                    intent.putExtra("ID",lista.get(getAdapterPosition()).getIdAlquiler());
+                    intent.putExtra("ID",lista.get(getAdapterPosition()).getIdA());
                     context.startActivity(intent);
                 }
             });

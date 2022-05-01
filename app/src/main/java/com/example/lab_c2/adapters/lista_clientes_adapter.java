@@ -33,7 +33,7 @@ public class lista_clientes_adapter extends RecyclerView.Adapter<lista_clientes_
     @Override
     public void onBindViewHolder(@NonNull clienteViewHolder holder, int position) {
         holder.viewNombre.setText(listaClientes.get(position).getNombre());
-        holder.viewId.setText(String.valueOf(listaClientes.get(position).getId()));
+        holder.viewId.setText(listaClientes.get(position).getId());
 
     }
 

@@ -1,16 +1,26 @@
 package com.example.lab_c2.entidades;
 
 public class alquilerLista {
-    private int idAlquiler;
+    private String idA;
     private String nombreV;
     private String nombreC;
 
-    public int getIdAlquiler() {
-        return idAlquiler;
+    public alquilerLista(String idA, String nombreV, String nombreC) {
+        this.idA = idA;
+        this.nombreV = nombreV;
+        this.nombreC = nombreC;
     }
 
-    public void setIdAlquiler(int idAlquiler) {
-        this.idAlquiler = idAlquiler;
+    public alquilerLista(){
+
+    }
+
+    public String getIdA() {
+        return idA;
+    }
+
+    public void setIdA(String idAlquiler) {
+        this.idA = idAlquiler;
     }
 
     public String getNombreV() {

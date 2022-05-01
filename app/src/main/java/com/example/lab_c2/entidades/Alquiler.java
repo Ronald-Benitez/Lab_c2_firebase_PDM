@@ -1,52 +1,51 @@
 package com.example.lab_c2.entidades;
 
 public class Alquiler {
-    private int idA;
-    private int idC;
-    private int idV;
-    private String fecchaInicio;
-    private String fecchaFin;
+    private String idA;
+    private String fechaInicio;
+    private String fechaFin;
     private String tiempoAlquiler;
     private String precioAlquiler;
+    private String nombreC;
+    private String nombreV;
 
-    public int getIdA() {
+    public Alquiler(){
+
+    }
+
+    public Alquiler(String idA, String fechaInicio, String fechaFin, String tiempoAlquiler, String precioAlquiler, String nombreC, String nombreV){
+        this.setIdV(idA);
+        this.setFechaInicio(fechaInicio);
+        this.setFechaFin(fechaFin);
+        this.setTiempoAlquiler(tiempoAlquiler);
+        this.setPrecioAlquiler(precioAlquiler);
+        this.setNombreC(nombreC);
+        this.setNombreV(nombreV);
+    }
+
+
+    public String getIdA() {
         return idA;
     }
 
-    public void setIdA(int idA) {
+    public void setIdV(String idA) {
         this.idA = idA;
     }
 
-    public int getIdC() {
-        return idC;
+    public String getFechaInicio() {
+        return fechaInicio;
     }
 
-    public void setIdC(int idC) {
-        this.idC = idC;
+    public void setFechaInicio(String fechaInicio) {
+        this.fechaInicio = fechaInicio;
     }
 
-    public int getIdV() {
-        return idV;
+    public String getFechaFin() {
+        return fechaFin;
     }
 
-    public void setIdV(int idV) {
-        this.idV = idV;
-    }
-
-    public String getFecchaInicio() {
-        return fecchaInicio;
-    }
-
-    public void setFecchaInicio(String fecchaInicio) {
-        this.fecchaInicio = fecchaInicio;
-    }
-
-    public String getFecchaFin() {
-        return fecchaFin;
-    }
-
-    public void setFecchaFin(String fecchaFin) {
-        this.fecchaFin = fecchaFin;
+    public void setFechaFin(String fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
     public String getTiempoAlquiler() {
@@ -63,5 +62,21 @@ public class Alquiler {
 
     public void setPrecioAlquiler(String precioAlquiler) {
         this.precioAlquiler = precioAlquiler;
+    }
+
+    public String getNombreC() {
+        return nombreC;
+    }
+
+    public void setNombreC(String nombreC) {
+        this.nombreC = nombreC;
+    }
+
+    public String getNombreV() {
+        return nombreV;
+    }
+
+    public void setNombreV(String nombreV) {
+        this.nombreV = nombreV;
     }
 }

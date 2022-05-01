@@ -28,7 +28,7 @@ public class verVehiculo extends AppCompatActivity {
     Button vehiculoB,deleteVehiculo;
     public String id="";
 
-    public FirebaseFirestore dbF=FirebaseFirestore.getInstance();
+    public FirebaseFirestore dbF = FirebaseFirestore.getInstance();
     public dbVehiculos db=new dbVehiculos(this);
 
     @Override

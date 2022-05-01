@@ -1,5 +1,6 @@
 package com.example.lab_c2;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,12 +22,20 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.lab_c2.adapters.lista_vehiculos_adapter;
 import com.example.lab_c2.db.dbAlquileres;
 import com.example.lab_c2.db.dbClientes;
 import com.example.lab_c2.db.dbVehiculos;
 import com.example.lab_c2.entidades.Alquiler;
 import com.example.lab_c2.entidades.Clientes;
 import com.example.lab_c2.entidades.vehiculo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -38,14 +47,15 @@ public class RegistroAlquiler extends AppCompatActivity {
     Button registro,delete;
     TextView precioAlquiler,fechaInicio, fechaFin,tiempoAlquiler;
     Spinner idVehiculo,idCliente;
-    int id=0;
-    String idV="";
-    int idC=0;
+    String id="";
+    String nVehiculo="";
 
     ArrayList<String> listVehiculos,listClientes;
     dbVehiculos vehiculosDB = new dbVehiculos(this);
-    dbClientes clientesDB = new dbClientes(this);
+    dbAlquileres alquileresDB = new dbAlquileres(this);
     dbAlquileres alquilerDB = new dbAlquileres(this);
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     DatePickerDialog.OnDateSetListener setDateListener,setDateListener2;
 
@@ -69,43 +79,34 @@ public class RegistroAlquiler extends AppCompatActivity {
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        listVehiculos = null;
-        listClientes = clientesDB.spinnerClientes();
-
-        if(listVehiculos.size()<1){
-            Toast.makeText(this, "No hay vehiculos disponibles", Toast.LENGTH_SHORT).show();
-        }
+        getVehiculos();
+        getClientes();
 
         if(extras!=null){
-            id = extras.getInt("ID");
+            id = extras.getString("ID");
             registro.setText("Actualizar");
             delete.setVisibility(View.VISIBLE);
+            DocumentReference docRef = db.collection("alquileres").document(id);
 
-            Alquiler alquiler = alquilerDB.findAlquiler("idA",String.valueOf(id));
-            vehiculo ve = null;
-            Clientes cli = clientesDB.findClientes("idC",String.valueOf(alquiler.getIdC()));
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Alquiler alquiler = documentSnapshot.toObject(Alquiler.class);
+                    fechaInicio.setText(alquiler.getFechaInicio());
+                    fechaFin.setText(alquiler.getFechaFin());
+                    tiempoAlquiler.setText(alquiler.getTiempoAlquiler());
+                    precioAlquiler.setText(alquiler.getPrecioAlquiler());
+                    idVehiculo.setSelection(listVehiculos.indexOf(alquiler.getNombreV()));
+                    idCliente.setSelection(listClientes.indexOf(alquiler.getNombreC()));
 
-            String clienteN = cli.getId()+"-"+cli.getNombre();
-            String vehiculoN = ve.getId()+"-"+ve.getNombre();
+                    nVehiculo = alquiler.getNombreV();
+                }
+            });
 
-            idV = ve.getId();
-            idC = cli.getId();
-
-            listClientes.add(clienteN);
-            listVehiculos.add(vehiculoN);
-
-            fechaInicio.setText(alquiler.getFecchaInicio());
-            fechaFin.setText(alquiler.getFecchaFin());
-            tiempoAlquiler.setText(alquiler.getTiempoAlquiler());
-            precioAlquiler.setText(alquiler.getPrecioAlquiler());
 
         }
 
-        ArrayAdapter<String> adapterV = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listVehiculos);
-        idVehiculo.setAdapter(adapterV);
 
-        ArrayAdapter<String> adapterC = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, listClientes);
-        idCliente.setAdapter(adapterC);
 
         if(extras!=null){
             idVehiculo.setSelection(listVehiculos.size()-1);
@@ -210,28 +211,9 @@ public class RegistroAlquiler extends AppCompatActivity {
             }
         };
 
-        /*
-        fechaInicio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        RegistroAlquiler.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                        i1 = i1 + 1;
-                        String date = i + "/" + i1 + "/" + i2;
-                        fechaInicio.setText(date);
-                    }
-                }, year, month, day);
-                datePickerDialog.show();
-            }
-        });*/
-
-
         registro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbAlquileres db = new dbAlquileres(RegistroAlquiler.this);
 
                 String idV = "";
                 String idC = "";
@@ -270,29 +252,53 @@ public class RegistroAlquiler extends AppCompatActivity {
                     campoVacio=true;
                 }
 
-                if(id>0) {
+                if(id != "") {
                     if (!campoVacio) {
-                        boolean updated = db.updateAlquiler(id,fechaI, fechaF, tiempoAl, precioAl, idV, idC);
+                        alquilerDB.updateAlquiler(id, fechaI, fechaF, tiempoAl, precioAl,idC,idV);
 
-                        if (updated) {
-                            Toast.makeText(RegistroAlquiler.this, "Alquiler actualizado con éxito", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(RegistroAlquiler.this, "Error al actualizar el alquiler", Toast.LENGTH_SHORT).show();
+                        if(nVehiculo!=idV){
+
+                            db.collection("vehiculos").whereEqualTo("nombre",idVehiculo.getSelectedItem().toString()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                                    vehiculo ve= documentSnapshot.toObject(vehiculo.class);
+                                    ve.setEstado("Alquilado");
+                                    vehiculosDB.updateVehiculo(ve);
+                                }
+
+                            });
+
+                            db.collection("vehiculos").whereEqualTo("nombre",nVehiculo).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                                    vehiculo ve= documentSnapshot.toObject(vehiculo.class);
+                                    ve.setEstado("Disponible");
+                                    vehiculosDB.updateVehiculo(ve);
+                                }
+
+                            });
+
                         }
+
                     } else {
                         Toast.makeText(RegistroAlquiler.this, "No debe dejar campos vacios", Toast.LENGTH_SHORT).show();
                     }
 
                 }else{
                     if (!campoVacio) {
-                        long id = db.createAlquiler(fechaI, fechaF, tiempoAl, precioAl, idV, idC);
+                        alquilerDB.createAlquiler(fechaI, fechaF, tiempoAl, precioAl, idV, idC);
+                        db.collection("vehiculos").whereEqualTo("nombre",idVehiculo.getSelectedItem().toString()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                                vehiculo ve= documentSnapshot.toObject(vehiculo.class);
+                                ve.setEstado("Alquilado");
+                                vehiculosDB.updateVehiculo(ve);
+                            }
 
-
-                        if (id > 0) {
-                            Toast.makeText(RegistroAlquiler.this, "Alquiler registrado con éxito", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(RegistroAlquiler.this, "Error al registrar alquiler", Toast.LENGTH_SHORT).show();
-                        }
+                        });
                     } else {
                         Toast.makeText(RegistroAlquiler.this, "No debe dejar campos vacios", Toast.LENGTH_SHORT).show();
                     }
@@ -305,16 +311,7 @@ public class RegistroAlquiler extends AppCompatActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean removed = alquilerDB.deleteAlquiler(id);
-
-                if(removed){
-                    Toast.makeText(RegistroAlquiler.this, "Alquiler eliminado con éxito", Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(RegistroAlquiler.this, adminAlquiler.class);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(RegistroAlquiler.this, "Error al eliminar alquiler", Toast.LENGTH_SHORT).show();
-                }
+                alquilerDB.deleteAlquiler(id,idVehiculo.getSelectedItem().toString());
             }
         });
 
@@ -342,40 +339,89 @@ public class RegistroAlquiler extends AppCompatActivity {
     }
 
     public void getPrecioAlquiler(){
-        int id = Integer.parseInt(idVehiculo.getSelectedItem().toString().split("-")[0]);
         int tiempo = Integer.parseInt(tiempoAlquiler.getText().toString());
 
         if (tiempo != 0) {
-            dbVehiculos db = new dbVehiculos(RegistroAlquiler.this);
-            vehiculo datos = null;
-            int precio = 0;
 
-            if (datos != null) {
-                String tipo = datos.getTipo();
+            db.collection("vehiculos").whereEqualTo("nombre",idVehiculo.getSelectedItem().toString()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
 
-                switch (tipo) {
-                    case "Coche":
-                        precio = 65 * tiempo;
-                        break;
-                    case "Microbus":
-                        precio = 65 * tiempo + 20;
-                        break;
-                    case "Furgoneta":
-                        precio = 70 * tiempo;
-                        break;
-                    case "Camión":
-                        precio = 75 * tiempo;
-                        break;
-                    default:
-                        precio = 0;
-                        break;
+                    String tipo = documentSnapshot.getString("tipo");
+                    int precio = 0;
+                    switch (tipo) {
+                        case "Coche":
+                            precio = 65 * tiempo;
+                            break;
+                        case "Microbus":
+                            precio = 65 * tiempo + 20;
+                            break;
+                        case "Furgoneta":
+                            precio = 70 * tiempo;
+                            break;
+                        case "Camión":
+                            precio = 75 * tiempo;
+                            break;
+                        default:
+                            precio = 0;
+                            break;
+                    }
+                    precioAlquiler.setText(String.valueOf(precio));
                 }
 
-            } else {
-                Toast.makeText(RegistroAlquiler.this, "Error al calcular el precio", Toast.LENGTH_SHORT).show();
-            }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(RegistroAlquiler.this, "Error al calcular el precio", Toast.LENGTH_SHORT).show();
+                }
+            });
 
-            precioAlquiler.setText(String.valueOf(precio));
         }
     }
+
+    public void getVehiculos(){
+        listVehiculos = new ArrayList<>();
+
+        db.collection("vehiculos")
+                .whereEqualTo("estado","Disponible")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                listVehiculos.add(document.getString("nombre"));
+                            }
+                            ArrayAdapter<String> adapterV = new ArrayAdapter<String>(RegistroAlquiler.this, android.R.layout.simple_spinner_item, listVehiculos);
+                            idVehiculo.setAdapter(adapterV);
+
+
+                        }
+                    }
+                });
+    }
+
+
+    public void getClientes(){
+        listClientes = new ArrayList<>();
+
+        db.collection("clientes")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                listClientes.add(document.getString("nombre"));
+                            }
+                            ArrayAdapter<String> adapterC = new ArrayAdapter<String>(RegistroAlquiler.this, android.R.layout.simple_spinner_item, listClientes);
+
+                            idCliente.setAdapter(adapterC);
+                        }
+                    }
+                });
+    }
+
+
 }

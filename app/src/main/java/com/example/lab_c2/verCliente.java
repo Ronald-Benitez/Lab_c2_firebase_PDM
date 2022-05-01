@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.lab_c2.db.dbClientes;
 import com.example.lab_c2.entidades.Clientes;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class verCliente extends AppCompatActivity {
     private TextView idtext; //textViewID
@@ -22,13 +24,16 @@ public class verCliente extends AppCompatActivity {
     private Button editarBtn,eliminarBtn;
     Clientes cliente;
 
-    boolean pasar =false;
     boolean modoEdicion = false;
-    int id=0;
+    String id="";
+
+    FirebaseFirestore dbF = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
         setContentView(R.layout.activity_ver_cliente);
 
         idtext = findViewById(R.id.textViewID);
@@ -36,21 +41,20 @@ public class verCliente extends AppCompatActivity {
         editarBtn = findViewById(R.id.botonActulizarCliente);
         eliminarBtn = findViewById(R.id.botonEliminarCliente);
 
+        if(extras!=null) {
+            id = extras.getString("id");
+            modoEdicion = extras.getBoolean("editar");
 
-         if(savedInstanceState ==null){
-             Bundle extras = getIntent().getExtras();
-             if (extras==null){
-                 id = Integer.parseInt(null);
-             }else{
-                 modoEdicion = extras.getBoolean("editar");
-                 id = extras.getInt("id");
-             }
-         }else{
-             id = (int) savedInstanceState.getSerializable("id");
-         }
+           DocumentReference docRef = dbF.collection("clientes").document(id);
 
-        dbClientes dbclientes = new dbClientes(verCliente.this);
-         cliente = dbclientes.mostrarCliente(id);
+            docRef.get().addOnSuccessListener(documentSnapshot -> {
+                cliente = documentSnapshot.toObject(Clientes.class);
+                idtext.setText(cliente.getId());
+                nombretxt.setText(cliente.getNombre());
+
+            });
+        }
+
 
          if (cliente !=null){
              nombretxt.setText(cliente.getNombre());
@@ -63,7 +67,6 @@ public class verCliente extends AppCompatActivity {
          }
 
 
-
     }
 
     //EVENTOS DE BOTONES
@@ -72,13 +75,8 @@ public class verCliente extends AppCompatActivity {
 
         if (!nombretxt.getText().toString().equals("")){
             dbClientes dbclientes = new dbClientes(verCliente.this);
-            pasar = dbclientes.editarCliente(id,nombretxt.getText().toString());
+            dbclientes.editarCliente(id,nombretxt.getText().toString());
 
-            if (pasar){
-                Toast.makeText(this, "REGISTRO EDITADO CON EXITO", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(this, "ERROR EN LA MODIFICAION DEL CLIENTE", Toast.LENGTH_SHORT).show();
-            }
         }else{
             Toast.makeText(this, "Parametros vacios!", Toast.LENGTH_SHORT).show();
         }
@@ -92,12 +90,7 @@ public class verCliente extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dbClientes dbclientes = new dbClientes(verCliente.this);
-                        if (dbclientes.eliminarClinete(id)){
-                            //regresar al la vista
-                            Toast.makeText(verCliente.this, "CLIENTE ELIMINADO CONE EXITO!", Toast.LENGTH_SHORT).show();
-                            principal();
-                            
-                        }
+                        dbclientes.eliminarClinete(id);
 
                     }
                 }).setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -109,8 +102,5 @@ public class verCliente extends AppCompatActivity {
 
 
     }
-    private void principal(){
-        Intent intent = new Intent(this, Clientes_Activity.class);
-        startActivity(intent);
-    }
+
 }

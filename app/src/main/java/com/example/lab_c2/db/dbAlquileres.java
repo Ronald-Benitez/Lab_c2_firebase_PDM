@@ -1,148 +1,88 @@
 package com.example.lab_c2.db;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
+import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.lab_c2.adminAlquiler;
 import com.example.lab_c2.entidades.Alquiler;
-import com.example.lab_c2.entidades.alquilerLista;
 import com.example.lab_c2.entidades.vehiculo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
+import java.util.UUID;
 
-public class dbAlquileres extends dbHelper{
+public class dbAlquileres {
     Context context;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     public dbAlquileres(@Nullable Context context) {
-        super(context);
+        super();
         this.context=context;
     }
 
-    public long createAlquiler(String fechaInicio, String fechaFin,String tiempoAlquiler,String precioAlquiler,String idV,String idC){
-        long id=0;
+    public void createAlquiler(String fechaInicio, String fechaFin,String tiempoAlquiler,String precioAlquiler,String nombreC,String nombreV){
+        Alquiler al = new Alquiler(UUID.randomUUID().toString(),fechaInicio,fechaFin,tiempoAlquiler,precioAlquiler,nombreC,nombreV);
 
-        try{
-            dbHelper DBHelper = new dbHelper(context);
-            SQLiteDatabase db = DBHelper.getReadableDatabase();
-
-            ContentValues values= new ContentValues();
-            values.put("fechaInicio",fechaInicio);
-            values.put("fechaFin",fechaFin);
-            values.put("tiempoAlquiler",tiempoAlquiler);
-            values.put("precioAlquiler",precioAlquiler);
-            values.put("idV",idV);
-            values.put("idC",idC);
-
-            id = db.insert(TABLA_ALQUILERES,null,values);
-            db.close();
-        }catch (Exception e){
-            e.toString();
-        }
-
-        return id;
-    }
-
-    public ArrayList<alquilerLista> readListAlquiler(){
-        ArrayList<alquilerLista> lista = new ArrayList<>();
-        alquilerLista al = null;
-        Cursor cursorVehiculos = null;
-
-        try{
-
-            dbHelper DBHelper = new dbHelper(context);
-            SQLiteDatabase db = DBHelper.getReadableDatabase();
-            cursorVehiculos = db.rawQuery("SELECT alquileres.idA,vehiculos.nombre as \"nombreV\",clientes.nombre as \"nombreC\" FROM alquileres INNER JOIN vehiculos  ON alquileres.idV = vehiculos.idV INNER JOIN clientes ON alquileres.idC = clientes.idC",null);
-
-            if(cursorVehiculos.moveToFirst()){
-                do{
-                    al = new alquilerLista();
-                    al.setIdAlquiler(cursorVehiculos.getInt(0));
-                    al.setNombreV(cursorVehiculos.getString(1));
-                    al.setNombreC(cursorVehiculos.getString(2));
-
-                    lista.add(al);
-                }while(cursorVehiculos.moveToNext());
+        db.collection("alquileres").document(al.getIdA()).set(al).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(context,"Alquiler creado",Toast.LENGTH_SHORT).show();
             }
-            db.close();
-        }catch (Exception e){
-            e.toString();
-        }
-        cursorVehiculos.close();
-        return  lista;
-    }
-
-    public Alquiler findAlquiler(String clave, String valor){
-        Alquiler al = null;
-        Cursor cursorAlquiler = null;
-
-        try {
-            dbHelper DBHelper = new dbHelper(context);
-            SQLiteDatabase db = DBHelper.getReadableDatabase();
-            cursorAlquiler = db.rawQuery("SELECT * FROM "+TABLA_ALQUILERES+" WHERE "+clave+" = \""+valor+"\" LIMIT 1",null);
-            //Toast.makeText(context, "SELECT * FROM "+TABLA_VEHICULOS+" WHERE "+clave+" = \""+valor+"\" LIMIT 1", Toast.LENGTH_SHORT).show();
-            if(cursorAlquiler.moveToFirst()){
-                al = new Alquiler();
-                al.setIdA(cursorAlquiler.getInt(0));
-                al.setFecchaInicio(cursorAlquiler.getString(1));
-                al.setFecchaFin(cursorAlquiler.getString(2));
-                al.setTiempoAlquiler(cursorAlquiler.getString(3));
-                al.setPrecioAlquiler(cursorAlquiler.getString(4));
-                al.setIdV(cursorAlquiler.getInt(5));
-                al.setIdC(cursorAlquiler.getInt(6));
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context,"Error al crear alquiler",Toast.LENGTH_SHORT).show();
             }
-
-        }catch (Exception e){
-            e.toString();
-        }
-
-        cursorAlquiler.close();
-        return  al;
+        });
     }
 
-    public boolean updateAlquiler(int id,String fechaInicio, String fechaFin,String tiempoAlquiler,String precioAlquiler,String idV,String idC){
-        boolean updated = false;
 
-        try{
-            dbHelper DBHelper = new dbHelper(context);
-            SQLiteDatabase db = DBHelper.getReadableDatabase();
+    public void updateAlquiler(String id,String fechaInicio, String fechaFin,String tiempoAlquiler,String precioAlquiler,String nombreC,String nombreV){
+        Alquiler al = new Alquiler(id,fechaInicio,fechaFin,tiempoAlquiler,precioAlquiler,nombreC,nombreV);
 
-            ContentValues values= new ContentValues();
-            values.put("fechaInicio",fechaInicio);
-            values.put("fechaFin",fechaFin);
-            values.put("tiempoAlquiler",tiempoAlquiler);
-            values.put("precioAlquiler",precioAlquiler);
-            values.put("idV",idV);
-            values.put("idC",idC);
-
-            db.update(TABLA_ALQUILERES,values,"idA = "+id,null);
-            updated=true;
-            db.close();
-        }catch (Exception e){
-            updated = false;
-            e.toString();
-        }
-
-        return updated;
+        db.collection("alquileres").document(al.getIdA()).set(al).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(context,"Alquiler actualizado",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context,"Error al actualizar el alquiler",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    public boolean deleteAlquiler(int id){
-        dbHelper DBHelper = new dbHelper(context);
-        SQLiteDatabase db = DBHelper.getReadableDatabase();
+    public void deleteAlquiler(String id,String vehiculo){
+        dbVehiculos dbv = new dbVehiculos(context);
+        db.collection("alquileres").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(context, "Alquiler eliminado", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, adminAlquiler.class);
+                context.startActivity(intent);
 
-        boolean removed = false;
-
-        try{
-            db.delete(TABLA_ALQUILERES,"idA=?",new String[]{String.valueOf(id)});
-            removed = true;
-        }catch (Exception e){
-            removed = false;
-            e.toString();
-        }finally {
-            db.close();
-        }
-
-        return removed;
+                db.collection("vehiculos").whereEqualTo("nombre", vehiculo).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                        vehiculo ve = documentSnapshot.toObject(vehiculo.class);
+                        ve.setEstado("Disponible");
+                        dbv.updateVehiculo(ve);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context,"Error al eliminar el alquiler",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
