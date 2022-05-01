@@ -69,7 +69,7 @@ public class RegistroAlquiler extends AppCompatActivity {
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        listVehiculos = vehiculosDB.spinnerVehiculos();
+        listVehiculos = null;
         listClientes = clientesDB.spinnerClientes();
 
         if(listVehiculos.size()<1){
@@ -82,7 +82,7 @@ public class RegistroAlquiler extends AppCompatActivity {
             delete.setVisibility(View.VISIBLE);
 
             Alquiler alquiler = alquilerDB.findAlquiler("idA",String.valueOf(id));
-            vehiculo ve = vehiculosDB.findVehiculo("idV",String.valueOf(alquiler.getIdV()));
+            vehiculo ve = null;
             Clientes cli = clientesDB.findClientes("idC",String.valueOf(alquiler.getIdC()));
 
             String clienteN = cli.getId()+"-"+cli.getNombre();
@@ -286,7 +286,7 @@ public class RegistroAlquiler extends AppCompatActivity {
                 }else{
                     if (!campoVacio) {
                         long id = db.createAlquiler(fechaI, fechaF, tiempoAl, precioAl, idV, idC);
-                        vehiculosDB.updateEstadoVehiculo(idV, "Alquilado");
+
 
                         if (id > 0) {
                             Toast.makeText(RegistroAlquiler.this, "Alquiler registrado con éxito", Toast.LENGTH_SHORT).show();
@@ -309,7 +309,7 @@ public class RegistroAlquiler extends AppCompatActivity {
 
                 if(removed){
                     Toast.makeText(RegistroAlquiler.this, "Alquiler eliminado con éxito", Toast.LENGTH_SHORT).show();
-                    vehiculosDB.updateEstadoVehiculo(idV, "Disponible");
+
                     Intent intent = new Intent(RegistroAlquiler.this, adminAlquiler.class);
                     startActivity(intent);
                 }else{
@@ -347,7 +347,7 @@ public class RegistroAlquiler extends AppCompatActivity {
 
         if (tiempo != 0) {
             dbVehiculos db = new dbVehiculos(RegistroAlquiler.this);
-            vehiculo datos = db.findVehiculo("idV", String.valueOf(id));
+            vehiculo datos = null;
             int precio = 0;
 
             if (datos != null) {

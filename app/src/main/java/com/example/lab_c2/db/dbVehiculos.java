@@ -2,11 +2,14 @@ package com.example.lab_c2.db;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.lab_c2.Vehiculos;
 import com.example.lab_c2.entidades.vehiculo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,7 +36,7 @@ public class dbVehiculos {
 
     }
 
-    public long createVehiculo(String placa, String tipo, String estado,String nombre){
+    public void createVehiculo(String placa, String tipo, String estado,String nombre){
         final long[] id = {0};
 
         vehiculo ve = new vehiculo();
@@ -46,74 +49,47 @@ public class dbVehiculos {
         db.collection("vehiculos").document(ve.getId()).set(ve).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                id[0] =2;
+                Toast.makeText(context, "Vehiculo creado", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                id[0] =0;
+                Toast.makeText(context, "Error al crear vehiculo", Toast.LENGTH_SHORT).show();
             }
         });
 
-        return id[0];
     }
 
-    public ArrayList<String> spinnerVehiculos(){
-        ArrayList<String> lista = new ArrayList<>();
-        String ve = null;
+    public void updateVehiculo(String id,String placa, String tipo, String estado,String nombre){
+        vehiculo ve = new vehiculo(id,placa,tipo,estado,nombre);
 
-        return  lista;
+        db.collection("vehiculos").document(id).set(ve).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(context, "Vehiculo actualizado", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Error al actualizar", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
-    public ArrayList<vehiculo> readVehiculos (){
-        ArrayList<vehiculo> lista = new ArrayList<>();
+    public void deleteVehiculo(String id){
+        db.collection("vehiculos").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(context, "Vehiculo eliminado", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, Vehiculos.class);
+                context.startActivity(intent);
+            }
 
-        db.collection("vehiculos")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                vehiculo ve = document.toObject(vehiculo.class);
-                                Log.d("TAG", "DocumentSnapshot data: " + document.getData());
-                                Log.d("a",ve.getNombre());
-                                //
-                                lista.add(ve);
-                                Log.d("b",lista.get(0).getNombre());
-                            }
-                        }
-                    }
-                });
-
-        return  lista;
-    }
-
-    public vehiculo findVehiculo(String clave, String valor){
-        vehiculo ve = null;
-
-        return  ve;
-    }
-
-    public boolean updateVehiculo(String id,String placa, String tipo, String estado,String nombre){
-        boolean updated = false;
-
-        return updated;
-    }
-
-    public boolean updateEstadoVehiculo(String id, String estado){
-        boolean updated = false;
-
-
-
-        return updated;
-    }
-
-    public boolean deleteVehiculo(String id){
-        boolean removed = false;
-
-
-        return removed;
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

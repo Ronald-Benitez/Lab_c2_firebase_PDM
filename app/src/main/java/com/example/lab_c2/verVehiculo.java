@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,6 +16,10 @@ import android.widget.Toast;
 
 import com.example.lab_c2.db.dbVehiculos;
 import com.example.lab_c2.entidades.vehiculo;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class verVehiculo extends AppCompatActivity {
     EditText nombreVehiculo,placaVehiculo;
@@ -22,6 +27,9 @@ public class verVehiculo extends AppCompatActivity {
     Switch estadoVehiculo;
     Button vehiculoB,deleteVehiculo;
     public String id="";
+
+    public FirebaseFirestore dbF=FirebaseFirestore.getInstance();
+    public dbVehiculos db=new dbVehiculos(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,24 +51,26 @@ public class verVehiculo extends AppCompatActivity {
         if(extras!=null){
             id = extras.getString("ID");
             vehiculoB.setText("Actualizar");
-            dbVehiculos db = new dbVehiculos(verVehiculo.this);
-            vehiculo ve = db.findVehiculo("idV",String.valueOf(id));
 
-            nombreVehiculo.setText(ve.getNombre());
-            placaVehiculo.setText(ve.getPlaca());
-            String tipos[] = {"Coche","Microbus","Furgoneta","Camión"};
+            DocumentReference docRef = dbF.collection("vehiculos").document(id);
 
-            for(int i=0; i<4;i++){
-                if(ve.getTipo()==tipos[i]){
-                    tipoVehiculo.setSelection(i);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    vehiculo v = documentSnapshot.toObject(vehiculo.class);
+                    nombreVehiculo.setText(v.getNombre());
+                    placaVehiculo.setText(v.getPlaca());
+                    tipoVehiculo.setSelection(adapter.getPosition(v.getTipo()));
+                    estadoVehiculo.setText(v.getEstado());
                 }
-            }
-            estadoVehiculo.setText(ve.getEstado());
+            });
+
             deleteVehiculo.setVisibility(View.VISIBLE);
 
         }else{
             vehiculoB.setText("Registrar");
             estadoVehiculo.setText("Disponible");
+            estadoVehiculo.setVisibility(View.INVISIBLE);
         }
 
         vehiculoB.setOnClickListener(new View.OnClickListener() {
@@ -69,23 +79,9 @@ public class verVehiculo extends AppCompatActivity {
                 dbVehiculos db = new dbVehiculos(verVehiculo.this);
 
                 if(id != ""){
-                    boolean updated = db.updateVehiculo(id,placaVehiculo.getText().toString(), tipoVehiculo.getSelectedItem().toString(), estadoVehiculo.getText().toString(), nombreVehiculo.getText().toString());
-
-                    if(updated){
-                        Toast.makeText(verVehiculo.this, "Vehiculo actualizado con éxito", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(verVehiculo.this, "Error al actualizar el vehículo", Toast.LENGTH_SHORT).show();
-                    }
+                    db.updateVehiculo(id,placaVehiculo.getText().toString(), tipoVehiculo.getSelectedItem().toString(), estadoVehiculo.getText().toString(), nombreVehiculo.getText().toString());
                 }else {
-
-                    long id = db.createVehiculo(placaVehiculo.getText().toString(), tipoVehiculo.getSelectedItem().toString(), estadoVehiculo.getText().toString(), nombreVehiculo.getText().toString());
-
-                    if (id > 0) {
-                        Toast.makeText(verVehiculo.this, "Vehiculo registrado con éxito", Toast.LENGTH_SHORT).show();
-                        limpiar();
-                    } else {
-                        Toast.makeText(verVehiculo.this, "Error al registrar el vehículo", Toast.LENGTH_SHORT).show();
-                    }
+                    db.createVehiculo(placaVehiculo.getText().toString(), tipoVehiculo.getSelectedItem().toString(), estadoVehiculo.getText().toString(), nombreVehiculo.getText().toString());
                 }
             }
         });
@@ -104,17 +100,7 @@ public class verVehiculo extends AppCompatActivity {
         deleteVehiculo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbVehiculos db = new dbVehiculos(verVehiculo.this);
-
-                boolean removed = db.deleteVehiculo(id);
-
-                if(removed){
-                    Toast.makeText(verVehiculo.this, "Vehículo eliminado exitosamente", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(verVehiculo.this,Vehiculos.class);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(verVehiculo.this, "Error al eliminar el vehiculo", Toast.LENGTH_SHORT).show();
-                }
+                db.deleteVehiculo(id);
             }
         });
     }

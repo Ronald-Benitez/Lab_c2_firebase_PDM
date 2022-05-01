@@ -49,8 +49,6 @@ public class Vehiculos extends AppCompatActivity {
 
         newVehiculo = findViewById(R.id.newVehiculo);
 
-        listaVehiculos = db.readVehiculos();
-
 
         firebaseGetItem();
 
@@ -70,18 +68,24 @@ public class Vehiculos extends AppCompatActivity {
         findVehiculo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                vehiculo ve = db.findVehiculo(claveBusqueda.getSelectedItem().toString(), valorBusqueda.getText().toString());
+                String clave = claveBusqueda.getSelectedItem().toString();
+                String valor = valorBusqueda.getText().toString();
 
-                if (ve != null) {
-                    Intent intent = new Intent(Vehiculos.this, verVehiculo.class);
-                    intent.putExtra("ID", ve.getId());
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(Vehiculos.this, "Vehiculo no encontrado", Toast.LENGTH_SHORT).show();
-                }
+                dbF.collection("vehiculos").whereEqualTo(clave,valor).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        Intent intent = new Intent(Vehiculos.this,verVehiculo.class);
+                        intent.putExtra("ID",queryDocumentSnapshots.getDocuments().get(0).getId());
+                        startActivity(intent);
+                    }
+
+                    public void onFailure(Exception e){
+                        Toast.makeText(Vehiculos.this,"Vehiculo no encontrado",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
-
 
     }
     public void firebaseGetItem(){
