@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        createDB();
+
         //INICIALIZACION DE BOTONES
 
         adminVehiculo = findViewById(R.id.adminVehiculos);
@@ -65,14 +65,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void createDB(){
-        dbHelper DBhelper = new dbHelper(MainActivity.this);
-        SQLiteDatabase db = DBhelper.getWritableDatabase();
-        if(db != null){
-            Toast.makeText(MainActivity.this, "Base de datos creada", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(MainActivity.this, "Error la crear la base de datos", Toast.LENGTH_SHORT).show();
-
-        }
-    }
 }
