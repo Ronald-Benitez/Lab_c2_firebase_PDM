@@ -288,7 +288,7 @@ public class RegistroAlquiler extends AppCompatActivity {
 
                 }else{
                     if (!campoVacio) {
-                        alquilerDB.createAlquiler(fechaI, fechaF, tiempoAl, precioAl, idV, idC);
+                        alquilerDB.createAlquiler(fechaI, fechaF, tiempoAl, precioAl, idC, idV);
                         db.collection("vehiculos").whereEqualTo("nombre",idVehiculo.getSelectedItem().toString()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
