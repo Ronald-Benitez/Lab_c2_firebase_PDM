@@ -73,6 +73,7 @@ public class lista_clientes_adapter extends RecyclerView.Adapter<lista_clientes_
                     Intent intent = new Intent(context, verCliente.class);
                     intent.putExtra("editar",false);
                     intent.putExtra("id",listaClientes.get(getAdapterPosition()).getId());
+                    intent.putExtra("nombreCC",listaClientes.get(getAdapterPosition()).getNombre());
                     context.startActivity(intent);
                 }
             });

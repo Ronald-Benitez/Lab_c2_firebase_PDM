@@ -12,6 +12,8 @@
         <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_ver_vehiculo.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/lista_item_clientes.xml" value="0.33" />
         <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/lista_item_vehiculo.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_c2_firebase_PDM/app/src/main/res/layout/activity_ver_cliente.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Ceopht/AndroidStudioProjects/Lab_c2_firebase_PDM/app/src/main/res/layout/lista_item_vehiculoscliente.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_admin_alquiler.xml" value="0.29375" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_clientes.xml" value="0.29375" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/activity_main.xml" value="0.29375" />
@@ -23,7 +25,6 @@
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/lista_item_vehiculo.xml" value="0.29375" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2/app/src/main/res/layout/spinner_item_vehiculo.xml" value="0.29375" />
         <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2_firebase/app/src/main/res/layout/activity_vehiculo_adapter.xml" value="0.1390625" />
-        <entry key="..\:/Users/ronal/AndroidStudioProjects/Lab_C2_firebase/app/src/main/res/layout/lista_item_alquiler.xml" value="0.29375" />
       </map>
     </option>
   </component>
